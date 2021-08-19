@@ -10,6 +10,7 @@ from selenium.webdriver.support.ui import Select
 import sqlite3
 import os
 from pathlib import Path
+import ann
 
 URL = "https://www.dofus.com/fr/achat-kamas/cours-kama-ogrines"
 DB_NAME = os.path.abspath(os.path.expanduser("mainDB.db"))
@@ -132,14 +133,20 @@ def main() -> None:
         cur.execute('''CREATE TABLE daily
                (date text, rate real)''')
 
-    last_date = get_last_record_date(cur)
-    result = scrap_data(last_date)
-    save_data_databse(cur,result)
-    con.commit()
+    # last_date = get_last_record_date(cur)
+    # result = scrap_data(last_date)
+    # save_data_databse(cur,result)
+    # con.commit()
 
 
-    analyse(get_records_from_database(cur))
-
+    
+    records = get_records_from_database(cur)
+    #analyse(records)
+    y = list(records.values())
+    print(len(y))
+    x_data = [y[i:i+10] for i in range(0,len(y)-10)]
+    print(x_data[-1])
+    ann.func(x_data,y[10:len(y)],75)
     con.commit()
     con.close()
 
